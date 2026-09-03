@@ -12,6 +12,8 @@ Implemented:
 - Organization membership and profile authorization
 - Customer profile create, edit, publish, and delete workflow
 - Public profiles at `/p/{slug}`
+- Downloadable vCards, permanent SVG QR codes, and browser-native profile sharing
+- Tracked and validated call, WhatsApp, email, website, directions, social, QR, and NFC actions
 - Lead capture and privacy-conscious visit analytics
 - Secure NFC redirects at `/n/{token}`
 - Sanctum-protected `/api/v1/profiles` endpoints
