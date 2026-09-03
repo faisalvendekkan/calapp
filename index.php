@@ -1,13 +1,48 @@
 <?php
 declare(strict_types=1);
 
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'samesite' => 'Lax',
+]);
+session_start();
+
+$authUsername = (string) (getenv('CALCAPP_USERNAME') ?: '');
+$authPasswordHash = (string) (getenv('CALCAPP_PASSWORD_HASH') ?: '');
+$authConfigured = $authUsername !== '' && preg_match('/^[a-f0-9]{64}$/', $authPasswordHash) === 1;
+$authError = null;
+$action = $_POST['action'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'logout') {
+    $_SESSION = [];
+    session_destroy();
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+if ($authConfigured && $_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'login') {
+    $submittedUsername = trim((string) ($_POST['username'] ?? ''));
+    $submittedPasswordHash = hash('sha256', (string) ($_POST['password'] ?? ''));
+
+    if (hash_equals($authUsername, $submittedUsername) && hash_equals($authPasswordHash, $submittedPasswordHash)) {
+        session_regenerate_id(true);
+        $_SESSION['authenticated'] = true;
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
+    }
+
+    $authError = 'Incorrect username or password.';
+}
+
+$isAuthenticated = ($_SESSION['authenticated'] ?? false) === true;
 $first = $_POST['first'] ?? '';
 $second = $_POST['second'] ?? '';
 $operation = $_POST['operation'] ?? 'add';
 $result = null;
 $error = null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($isAuthenticated && $_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'calculate') {
     if (!is_numeric($first) || !is_numeric($second)) {
         $error = 'Please enter two valid numbers.';
     } else {
@@ -88,6 +123,26 @@ function displayNumber(float $number): string
         .subtitle { margin: 0 0 28px; color: #fde047; }
         label { display: block; margin-bottom: 8px; font-weight: 700; }
 
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .logout-form { margin: 0; }
+
+        .logout-button {
+            width: auto;
+            min-height: 38px;
+            margin: 0;
+            padding: 0 14px;
+            border: 1px solid #ca8a04;
+            color: #fde047;
+            background: transparent;
+            font-size: .9rem;
+        }
+
         input, select, button {
             width: 100%;
             min-height: 48px;
@@ -133,11 +188,47 @@ function displayNumber(float $number): string
     </style>
 </head>
 <body>
+    <?php if (!$isAuthenticated): ?>
     <main class="calculator">
-        <h1>CalcApp</h1>
-        <p class="subtitle">A simple calculator powered by PHP.</p>
+        <h1>CalcApp Login</h1>
+        <?php if (!$authConfigured): ?>
+            <p class="subtitle">Login is not configured yet.</p>
+            <div class="message error" role="alert">Set CALCAPP_USERNAME and CALCAPP_PASSWORD_HASH in the private hosting environment.</div>
+        <?php else: ?>
+            <p class="subtitle">Sign in to use the calculator.</p>
+
+            <form method="post" action="">
+                <input type="hidden" name="action" value="login">
+
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+                <button type="submit">Sign in</button>
+            </form>
+
+            <?php if ($authError !== null): ?>
+                <div class="message error" role="alert"><?= htmlspecialchars($authError, ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
+        <?php endif; ?>
+    </main>
+    <?php else: ?>
+    <main class="calculator">
+        <div class="topbar">
+            <div>
+                <h1>CalcApp</h1>
+                <p class="subtitle">A simple calculator powered by PHP.</p>
+            </div>
+            <form class="logout-form" method="post" action="">
+                <input type="hidden" name="action" value="logout">
+                <button class="logout-button" type="submit">Log out</button>
+            </form>
+        </div>
 
         <form method="post" action="">
+            <input type="hidden" name="action" value="calculate">
             <label for="first">First number</label>
             <input id="first" name="first" type="number" step="any" required value="<?= htmlspecialchars((string) $first, ENT_QUOTES, 'UTF-8') ?>">
 
@@ -161,6 +252,7 @@ function displayNumber(float $number): string
             <div class="message error" role="alert"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
     </main>
+    <?php endif; ?>
 </body>
 </html>
 
