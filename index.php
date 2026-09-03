@@ -56,8 +56,8 @@ function displayNumber(float $number): string
         :root {
             color-scheme: dark;
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #050505;
-            color: #fff7bf;
+            background: #050b18;
+            color: #eff6ff;
         }
 
         * { box-sizing: border-box; }
@@ -69,23 +69,23 @@ function displayNumber(float $number): string
             place-items: center;
             padding: 24px;
             background:
-                radial-gradient(circle at top left, rgba(250, 204, 21, .2), transparent 34%),
-                radial-gradient(circle at bottom right, rgba(234, 179, 8, .14), transparent 34%),
-                #050505;
+                radial-gradient(circle at top left, rgba(37, 99, 235, .28), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(239, 68, 68, .24), transparent 34%),
+                #050b18;
         }
 
         .calculator {
             width: min(100%, 440px);
             padding: 32px;
-            border: 1px solid rgba(250, 204, 21, .35);
+            border: 1px solid rgba(239, 68, 68, .45);
             border-radius: 24px;
-            background: rgba(10, 10, 10, .9);
+            background: rgba(6, 20, 48, .92);
             box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
             backdrop-filter: blur(18px);
         }
 
         h1 { margin: 0 0 8px; font-size: 2rem; }
-        .subtitle { margin: 0 0 28px; color: #fde047; }
+        .subtitle { margin: 0 0 28px; color: #60a5fa; }
         label { display: block; margin-bottom: 8px; font-weight: 700; }
 
         input, select, button {
@@ -98,21 +98,21 @@ function displayNumber(float $number): string
         input, select {
             margin-bottom: 18px;
             padding: 0 14px;
-            border: 1px solid #713f12;
-            background: #171717;
-            color: #fefce8;
+            border: 1px solid #1d4ed8;
+            background: #0b1f42;
+            color: #f8fafc;
         }
 
         input:focus, select:focus {
-            outline: 3px solid rgba(250, 204, 21, .25);
-            border-color: #facc15;
+            outline: 3px solid rgba(239, 68, 68, .25);
+            border-color: #ef4444;
         }
 
         button {
             margin-top: 6px;
             border: 0;
-            color: #050505;
-            background: linear-gradient(135deg, #fde047, #eab308);
+            color: #ffffff;
+            background: linear-gradient(135deg, #2563eb, #dc2626);
             font-weight: 800;
             cursor: pointer;
         }
@@ -128,8 +128,8 @@ function displayNumber(float $number): string
             font-weight: 800;
         }
 
-        .result { background: rgba(250, 204, 21, .14); color: #fde047; }
-        .error { background: rgba(250, 204, 21, .1); color: #fef08a; border: 1px solid #ca8a04; }
+        .result { background: rgba(37, 99, 235, .18); color: #93c5fd; }
+        .error { background: rgba(239, 68, 68, .16); color: #fca5a5; border: 1px solid #dc2626; }
     </style>
 </head>
 <body>
