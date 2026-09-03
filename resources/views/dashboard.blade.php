@@ -1,0 +1,4 @@
+<x-app-layout>
+    <x-slot name="header"><h2 class="text-2xl font-bold text-slate-950">BATAQAH dashboard</h2></x-slot>
+    <div class="py-10"><div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><section class="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700 p-8 text-white shadow-xl sm:p-12"><p class="text-sm font-bold uppercase tracking-[0.24em] text-cyan-300">Your digital identity platform</p><h1 class="mt-4 max-w-3xl text-3xl font-black sm:text-5xl">Build a profile customers remember.</h1><p class="mt-4 max-w-2xl text-blue-100">Create, publish and manage professional profiles for QR codes, NFC cards and every place your customers discover you.</p><a href="{{ route('profiles.index') }}" class="mt-8 inline-flex rounded-xl bg-cyan-400 px-6 py-3 font-bold text-slate-950 hover:bg-cyan-300">Manage profiles</a></section></div></div>
+</x-app-layout>
